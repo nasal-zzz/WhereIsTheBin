@@ -1,0 +1,42 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="map-page">
+  <aside class="panel">
+    <h1><%= t('map.title') %></h1>
+    <p class="demo-banner" id="demo-banner" hidden><%= t('map.demoBanner') %></p>
+
+    <form id="search-form" class="search" role="search">
+      <label for="q"><%= t('map.search.label') %></label>
+      <div class="row">
+        <input id="q" name="q" type="search" minlength="2" maxlength="120" placeholder="<%= t('map.search.placeholder') %>" autocomplete="off">
+        <button class="btn btn-primary" type="submit"><%= t('map.search.button') %></button>
+      </div>
+    </form>
+    <button class="btn btn-ghost block" id="locate" type="button"><%= t('map.locate') %></button>
+
+    <div class="filters">
+      <div>
+        <label for="type"><%= t('map.filter.type') %></label>
+        <select id="type">
+          <option value=""><%= t('map.filter.all') %></option>
+          <% facilityTypes.forEach((x) => { %><option value="<%= x %>"><%= t('type.' + x) %></option><% }) %>
+        </select>
+      </div>
+      <div>
+        <label for="radius"><%= t('map.filter.radius') %></label>
+        <select id="radius">
+          <% [1, 3, 5, 10].forEach((km) => { %><option value="<%= km %>" <%= km === 3 ? 'selected' : '' %>><%= t('map.radius.km', { km }) %></option><% }) %>
+        </select>
+      </div>
+    </div>
+
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+    <ul id="list" class="cards" aria-label="<%= t('map.listLabel') %>"></ul>
+  </aside>
+  <div id="map" role="region" aria-label="<%= t('map.mapLabel') %>"></div>
+</main>
+<script type="application/json" id="i18n"><%- clientStrings %></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/map.js"></script>
+<%- include('../partials/footer') %>

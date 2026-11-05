@@ -1,0 +1,29 @@
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="/" aria-label="<%= t('brand.name') %>">
+      <img src="/images/logo-icon.png" alt="" width="40" height="40">
+      <span>Where<b>Is</b>The<b>Bin</b></span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="/" <%- currentPath === '/' ? 'aria-current="page"' : '' %>><%= t('nav.home') %></a>
+      <a href="/map" <%- currentPath === '/map' ? 'aria-current="page"' : '' %>><%= t('nav.map') %></a>
+      <a href="/add" <%- currentPath === '/add' ? 'aria-current="page"' : '' %>><%= t('nav.addBin') %></a>
+    </nav>
+    <div class="tools">
+      <div class="lang" role="group" aria-label="<%= t('nav.language') %>">
+        <a href="?lang=en" lang="en" <%- currentLocale === 'en' ? 'aria-current="true"' : '' %>>English</a>
+        <a href="?lang=ml" lang="ml" <%- currentLocale === 'ml' ? 'aria-current="true"' : '' %>>മലയാളം</a>
+      </div>
+      <% if (currentUser) { %>
+        <a class="nav-link" href="/my"><%= t('nav.my') %></a>
+        <form method="post" action="/logout" class="inline">
+          <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+          <button class="linkbtn" type="submit"><%= t('nav.logout') %></button>
+        </form>
+      <% } else { %>
+        <a class="nav-link" href="/login"><%= t('nav.login') %></a>
+        <a class="btn btn-small btn-primary" href="/register"><%= t('nav.register') %></a>
+      <% } %>
+    </div>
+  </div>
+</header>

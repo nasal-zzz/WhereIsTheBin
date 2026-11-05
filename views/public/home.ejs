@@ -1,0 +1,49 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1><%= t('home.title') %></h1>
+        <p class="lead"><%= t('home.lead') %></p>
+        <div class="actions">
+          <a class="btn btn-primary" href="/map"><%= t('home.cta.nearby') %></a>
+          <a class="btn btn-ghost" href="/map"><%= t('home.cta.explore') %></a>
+        </div>
+      </div>
+      <img class="hero-logo" src="/images/logo.png" alt="<%= t('brand.name') %>" width="420" height="320">
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2><%= t('home.how.title') %></h2>
+      <ol class="steps">
+        <% [1, 2, 3].forEach((n) => { %>
+        <li><h3><%= t('home.how.' + n + '.title') %></h3><p><%= t('home.how.' + n + '.text') %></p></li>
+        <% }) %>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <h2><%= t('home.types.title') %></h2>
+      <p class="lead"><%= t('home.types.text') %></p>
+      <ul class="types">
+        <% facilityTypes.forEach((type) => { %><li><%= t('type.' + type) %></li><% }) %>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap contribute">
+      <div>
+        <h2><%= t('home.contribute.title') %></h2>
+        <p><%= t('home.contribute.text') %></p>
+      </div>
+      <a class="btn btn-primary" href="/add"><%= t('home.contribute.cta') %></a>
+    </div>
+  </section>
+</main>
+<%- include('../partials/footer') %>

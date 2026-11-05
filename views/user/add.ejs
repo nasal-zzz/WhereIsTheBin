@@ -1,0 +1,65 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <h1 class="h-page"><%= t('add.title') %></h1>
+    <p class="lead"><%= t('add.intro') %></p>
+    <%- include('../partials/messages') %>
+    <% if (duplicates.length) { %>
+    <div class="dups"><h2><%= t('add.nearby') %></h2>
+      <ul><% duplicates.forEach((d) => { %><li><strong><%= d.name %></strong> · <%= t('type.' + d.facilityType) %> · <%= t('status.' + d.verificationStatus) %></li><% }) %></ul>
+      <label class="check"><input type="checkbox" name="confirmDuplicate" form="add-form" <%= values.confirmDuplicate ? 'checked' : '' %>> <%= t('add.confirmDup') %></label>
+    </div>
+    <% } %>
+    <form id="add-form" method="post" action="/add" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field"><label for="name"><%= t('add.name') %></label>
+        <input id="name" name="name" type="text" maxlength="120" required value="<%= values.name || '' %>"></div>
+      <div class="grid2">
+        <div class="field"><label for="facilityType"><%= t('add.type') %></label>
+          <select id="facilityType" name="facilityType" required>
+            <option value="" disabled <%= values.facilityType ? '' : 'selected' %>></option>
+            <% facilityTypes.forEach((x) => { %><option value="<%= x %>" <%= values.facilityType === x ? 'selected' : '' %>><%= t('type.' + x) %></option><% }) %>
+          </select></div>
+        <div class="field"><label for="accessType"><%= t('add.access') %></label>
+          <select id="accessType" name="accessType">
+            <% accessTypes.forEach((x) => { %><option value="<%= x %>" <%= values.accessType === x ? 'selected' : '' %>><%= t('access.' + x) %></option><% }) %>
+          </select></div>
+      </div>
+      <fieldset class="field"><legend><%= t('add.waste') %></legend>
+        <div class="checks"><% wasteCategories.forEach((w) => { %>
+          <label class="check"><input type="checkbox" name="waste" value="<%= w %>" <%= values.waste.includes(w) ? 'checked' : '' %>> <%= t('waste.' + w) %></label>
+        <% }) %></div>
+      </fieldset>
+      <div class="grid2">
+        <div class="field"><label for="district"><%= t('add.district') %></label>
+          <input id="district" name="district" type="text" maxlength="80" value="<%= values.district || '' %>"></div>
+        <div class="field"><label for="localBody"><%= t('add.localBody') %></label>
+          <input id="localBody" name="localBody" type="text" maxlength="80" value="<%= values.localBody || '' %>"></div>
+      </div>
+      <div class="field"><label for="address"><%= t('add.address') %></label>
+        <input id="address" name="address" type="text" maxlength="300" value="<%= values.address || '' %>"></div>
+      <div class="field"><label for="description"><%= t('add.description') %></label>
+        <textarea id="description" name="description" rows="3" maxlength="500"><%= values.description || '' %></textarea></div>
+
+      <fieldset class="field"><legend><%= t('add.location') %></legend>
+        <p class="hint"><%= t('add.pinHelp') %></p>
+        <div id="pin-map" class="pin-map" role="application" aria-label="<%= t('add.location') %>"></div>
+        <div class="pin-row">
+          <button class="btn btn-ghost btn-small" id="gps" type="button"><%= t('add.useGps') %></button>
+          <span id="coords" class="hint" role="status" aria-live="polite"></span>
+        </div>
+        <input type="hidden" id="lat" name="lat" value="<%= Number.isFinite(values.lat) ? values.lat : '' %>">
+        <input type="hidden" id="lng" name="lng" value="<%= Number.isFinite(values.lng) ? values.lng : '' %>">
+      </fieldset>
+
+      <label class="check"><input type="checkbox" name="consent" <%= values.consent ? 'checked' : '' %>> <%= t('add.consent') %></label>
+      <button class="btn btn-primary" type="submit"><%= t('add.submit') %></button>
+    </form>
+  </div>
+</main>
+<script type="application/json" id="i18n"><%- clientStrings %></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/add.js"></script>
+<%- include('../partials/footer') %>

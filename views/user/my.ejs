@@ -1,0 +1,22 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <div class="title-row"><h1 class="h-page"><%= t('my.title') %></h1>
+      <a class="btn btn-primary btn-small" href="/add"><%= t('my.add') %></a></div>
+    <%- include('../partials/messages') %>
+    <% if (!items.length) { %><p class="lead"><%= t('my.empty') %></p><% } else { %>
+    <ul class="cards">
+      <% items.forEach((f) => { %>
+      <li class="card static">
+        <h3><%= f.name %></h3>
+        <p class="badges"><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
+          <span class="badge"><%= t('type.' + f.facilityType) %></span></p>
+        <p class="meta"><%= t('my.submitted', { date: new Date(f.createdAt).toLocaleDateString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'medium' }) }) %></p>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

@@ -1,0 +1,4 @@
+<% if (typeof flash !== 'undefined' && flash) { %><p class="flash" role="status"><%= t(flash) %></p><% } %>
+<% if (typeof errors !== 'undefined' && errors.length) { %>
+<div class="errors" role="alert"><ul><% errors.forEach((e) => { %><li><%= t(e) %></li><% }) %></ul></div>
+<% } %>

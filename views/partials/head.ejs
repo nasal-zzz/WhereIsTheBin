@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="<%= currentLocale %>">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= pageTitle ? t(pageTitle) + ' | ' : '' %><%= t('brand.name') %></title>
+  <meta name="description" content="<%= t('meta.description') %>">
+  <meta name="theme-color" content="#15803D">
+  <link rel="icon" href="/images/logo-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;500;700&family=Poppins:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="/css/main.css?v=<%= assetVersion %>">
+</head>
+<body>
+<a class="skip" href="#main"><%= t('nav.skip') %></a>

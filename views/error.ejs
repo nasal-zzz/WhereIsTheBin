@@ -1,0 +1,11 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+<main id="main" class="section">
+  <div class="wrap err">
+    <p class="err-code"><%= status %></p>
+    <h1><%= t(errKey + '.title') %></h1>
+    <p class="lead"><%= t(errKey + '.text') %></p>
+    <a class="btn btn-primary" href="/"><%= t('error.back') %></a>
+  </div>
+</main>
+<%- include('partials/footer') %>

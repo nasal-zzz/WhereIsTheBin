@@ -1,0 +1,22 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow">
+    <h1 class="h-page"><%= t('auth.register.title') %></h1>
+    <p class="lead"><%= t('auth.optional') %></p>
+    <%- include('../partials/messages') %>
+    <form method="post" action="/register" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field"><label for="name"><%= t('auth.name') %></label>
+        <input id="name" name="name" type="text" maxlength="60" autocomplete="name" required value="<%= values.name || '' %>"></div>
+      <div class="field"><label for="email"><%= t('auth.email') %></label>
+        <input id="email" name="email" type="email" maxlength="254" autocomplete="email" required value="<%= values.email || '' %>"></div>
+      <div class="field"><label for="password"><%= t('auth.password') %></label>
+        <input id="password" name="password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required aria-describedby="pw-hint">
+        <p id="pw-hint" class="hint"><%= t('auth.password.hint') %></p></div>
+      <button class="btn btn-primary" type="submit"><%= t('auth.register.submit') %></button>
+    </form>
+    <p class="switch"><a href="/login"><%= t('auth.switch.toLogin') %></a></p>
+  </div>
+</main>
+<%- include('../partials/footer') %>
