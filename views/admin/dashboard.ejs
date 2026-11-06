@@ -1,0 +1,32 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap">
+    <div class="title-row"><h1 class="h-page"><%= t('admin.title') %></h1>
+      <% if (['admin', 'super-admin'].includes(currentUser.role)) { %><a class="btn btn-ghost btn-small" href="/admin/audit"><%= t('admin.audit') %></a><% } %></div>
+    <%- include('../partials/messages') %>
+    <div class="kpis">
+      <% ['pending', 'verified', 'rejected', 'users'].forEach((k) => { %>
+      <div class="kpi"><span class="kpi-n"><%= counts[k] %></span><span><%= t('admin.kpi.' + k) %></span></div>
+      <% }) %>
+    </div>
+    <h2><%= t('admin.queue') %></h2>
+    <% if (!queue.length) { %><p class="lead"><%= t('admin.queue.empty') %></p><% } else { %>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t('add.name') %></th><th><%= t('add.type') %></th><th><%= t('add.district') %></th><th><%= t('admin.submitted') %></th><th></th></tr></thead>
+      <tbody>
+      <% queue.forEach((f) => { %>
+        <tr>
+          <td><strong><%= f.name %></strong><br><small><%= t('admin.submittedBy', { name: f.addedBy ? f.addedBy.name : t('admin.noName') }) %></small></td>
+          <td><%= t('type.' + f.facilityType) %></td>
+          <td><%= f.district || '-' %></td>
+          <td><%= new Date(f.createdAt).toLocaleDateString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'medium' }) %></td>
+          <td><a class="btn btn-primary btn-small" href="/admin/facilities/<%= f._id %>"><%= t('admin.review') %></a></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table></div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

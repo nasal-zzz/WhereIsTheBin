@@ -15,6 +15,7 @@
         <a href="?lang=ml" lang="ml" <%- currentLocale === 'ml' ? 'aria-current="true"' : '' %>>മലയാളം</a>
       </div>
       <% if (currentUser) { %>
+        <% if (['moderator', 'admin', 'super-admin'].includes(currentUser.role)) { %><a class="nav-link" href="/admin"><%= t('nav.moderation') %></a><% } %>
         <a class="nav-link" href="/my"><%= t('nav.my') %></a>
         <form method="post" action="/logout" class="inline">
           <input type="hidden" name="_csrf" value="<%= csrfToken() %>">

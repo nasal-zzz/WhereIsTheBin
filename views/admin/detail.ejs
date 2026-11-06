@@ -1,0 +1,43 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <p><a href="/admin"><%= t('admin.back') %></a></p>
+    <h1 class="h-page"><%= f.name %></h1>
+    <p class="badges"><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
+      <span class="badge"><%= t('type.' + f.facilityType) %></span></p>
+    <%- include('../partials/messages') %>
+
+    <div id="loc-map" class="pin-map" data-lat="<%= f.location.coordinates[1] %>" data-lng="<%= f.location.coordinates[0] %>" role="region" aria-label="<%= t('admin.location') %>"></div>
+
+    <dl class="facts">
+      <dt><%= t('admin.coords') %></dt><dd><%= f.location.coordinates[1].toFixed(6) %>, <%= f.location.coordinates[0].toFixed(6) %></dd>
+      <dt><%= t('add.waste') %></dt><dd><%= f.acceptedWaste.map((w) => t('waste.' + w)).join(', ') || '-' %></dd>
+      <dt><%= t('add.access') %></dt><dd><%= t('access.' + f.accessType) %></dd>
+      <dt><%= t('add.district') %></dt><dd><%= f.district || '-' %></dd>
+      <dt><%= t('add.localBody') %></dt><dd><%= f.localBody || '-' %></dd>
+      <dt><%= t('add.address') %></dt><dd><%= f.address || '-' %></dd>
+      <dt><%= t('add.description') %></dt><dd><%= f.description || '-' %></dd>
+      <dt><%= t('admin.submitted') %></dt><dd><%= t('admin.submittedBy', { name: f.addedBy ? f.addedBy.name : t('admin.noName') }) %> · <%= new Date(f.createdAt).toLocaleString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN') %></dd>
+      <% if (f.rejectionReason) { %><dt><%= t('admin.reason') %></dt><dd><%= f.rejectionReason %></dd><% } %>
+    </dl>
+
+    <% if (f.verificationStatus === 'pending') { %>
+    <form method="post" action="/admin/facilities/<%= f._id %>/decision" class="form decision">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field"><label for="reason"><%= t('admin.reason') %></label>
+        <textarea id="reason" name="reason" rows="3" maxlength="500" aria-describedby="rh"><%= reasonText %></textarea>
+        <p id="rh" class="hint"><%= t('admin.reason.hint') %></p></div>
+      <div class="actions">
+        <button class="btn btn-primary" type="submit" name="decision" value="approve"><%= t('admin.approve') %></button>
+        <button class="btn btn-ghost danger" type="submit" name="decision" value="reject"><%= t('admin.reject') %></button>
+      </div>
+    </form>
+    <% } %>
+  </div>
+</main>
+<script type="application/json" id="i18n"><%- clientStrings %></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/admin-detail.js"></script>
+<%- include('../partials/footer') %>

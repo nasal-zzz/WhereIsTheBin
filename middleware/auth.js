@@ -27,4 +27,13 @@ function requireLogin(req, res, next) {
   res.redirect('/login');
 }
 
-module.exports = { attachUser, requireLogin };
+// Allows only the listed roles; everyone else gets a 403 page.
+const requireRole = (roles) => (req, res, next) => {
+  if (req.user && roles.includes(req.user.role)) return next();
+  const err = new Error('Forbidden');
+  err.status = 403;
+  err.errKey = 'error.forbidden';
+  next(err);
+};
+
+module.exports = { attachUser, requireLogin, requireRole };

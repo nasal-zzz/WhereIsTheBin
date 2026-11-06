@@ -21,6 +21,9 @@ const facilitySchema = new mongoose.Schema(
     isDemo: { type: Boolean, default: false },
     description: { type: String, trim: true, maxlength: 500 },
     addedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    verifiedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    reviewedAt: Date,
+    rejectionReason: { type: String, maxlength: 500 },
     lastVerifiedAt: Date,
   },
   { timestamps: true }

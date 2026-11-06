@@ -1,0 +1,25 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap">
+    <p><a href="/admin"><%= t('admin.back') %></a></p>
+    <h1 class="h-page"><%= t('admin.audit') %></h1>
+    <% if (!entries.length) { %><p class="lead"><%= t('admin.audit.empty') %></p><% } else { %>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t('admin.audit.when') %></th><th><%= t('admin.audit.who') %></th><th><%= t('admin.audit.action') %></th><th><%= t('admin.audit.target') %></th><th><%= t('admin.reason') %></th></tr></thead>
+      <tbody>
+      <% entries.forEach((e) => { %>
+        <tr>
+          <td><%= new Date(e.createdAt).toLocaleString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN') %></td>
+          <td><%= e.actorId ? e.actorId.name : t('admin.noName') %></td>
+          <td><%= t('audit.' + e.action) %></td>
+          <td><%= e.targetName || e.targetId %></td>
+          <td><%= e.reason || '-' %></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table></div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>
