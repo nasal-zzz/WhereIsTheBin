@@ -55,4 +55,7 @@ async function createSubmission(d, userId) {
   });
 }
 
-module.exports = { findNearby, findDuplicates, createSubmission };
+// Public detail page: only verified facilities are ever visible.
+const getPublicFacility = (id) => Facility.findOne({ _id: id, verificationStatus: 'verified' }).lean();
+
+module.exports = { findNearby, findDuplicates, createSubmission, getPublicFacility };

@@ -8,6 +8,7 @@
   // Start centred on the Nilambur pilot area. Location is only requested when the user asks.
   const START = { lat: 11.2766, lng: 76.2273 };
   let origin = { ...START };
+  let originChosen = false; // true only after the user searched a place or shared their location
 
   const map = L.map('map').setView([origin.lat, origin.lng], 14);
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -29,9 +30,6 @@
     return n;
   };
   const km = (m) => (m / 1000).toFixed(1);
-  const directionsUrl = (f) =>
-    `https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=${origin.lat}%2C${origin.lng}%3B${f.lat}%2C${f.lng}`;
-
   function verifiedLine(f) {
     if (!f.lastVerifiedAt) return el('p', 'meta', t('map.neverVerified'));
     const d = new Date(f.lastVerifiedAt);
@@ -55,10 +53,12 @@
       box.append(el('p', 'meta', `${t('map.accepts')}: ${f.acceptedWaste.map((w) => t('waste.' + w)).join(', ')}`));
     }
     box.append(verifiedLine(f));
+    const more = el('a', 'btn btn-small btn-ghost', t('map.details'));
+    more.href = `/facility/${f.id}`;
+    box.append(more);
     const a = el('a', 'btn btn-small', t('map.directions'));
-    a.href = directionsUrl(f);
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
+    const from = originChosen ? `&from=${origin.lat.toFixed(5)},${origin.lng.toFixed(5)}` : '';
+    a.href = `/facility/${f.id}?directions=1${from}`; // directions open on our own site
     box.append(a);
     return box;
   }
@@ -119,6 +119,7 @@
         return;
       }
       origin = { lat: body.data.lat, lng: body.data.lng };
+      originChosen = true;
       load();
     } catch {
       setStatus(t('map.error'));
@@ -129,7 +130,7 @@
     if (!navigator.geolocation) return setStatus(t('map.locationDenied'));
     setStatus(t('map.locating'));
     navigator.geolocation.getCurrentPosition(
-      (pos) => { origin = { lat: pos.coords.latitude, lng: pos.coords.longitude }; load(); }, // never stored or sent anywhere but the nearby query
+      (pos) => { origin = { lat: pos.coords.latitude, lng: pos.coords.longitude }; originChosen = true; load(); }, // never stored or sent anywhere but the nearby query
       () => setStatus(t('map.locationDenied')),
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );

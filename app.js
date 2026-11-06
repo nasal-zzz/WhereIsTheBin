@@ -39,6 +39,8 @@ app.use(
     },
   })
 );
+// Never write query strings to logs: they can contain a person's coordinates.
+morgan.token('url', (req) => (req.originalUrl || req.url).split('?')[0]);
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, limit: 600, standardHeaders: true, legacyHeaders: false }));
 app.use(express.json({ limit: '100kb' }));

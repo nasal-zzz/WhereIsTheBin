@@ -141,3 +141,21 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
 .btn.danger{border-color:var(--err);color:var(--err)}.btn.danger:hover{background:#FEF2F2}
 
 
+
+/* Facility actions */
+.card .btn-small+.btn-small,.popup .btn-small+.btn-small{margin-inline-start:.4rem}
+
+
+
+
+/* Directions */
+[hidden]{display:none!important}
+.dir-panel{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:1rem 1.25rem;margin:1rem 0}
+.dir-summary{font-weight:600;font-size:1.1rem;margin:0 0 .6rem}
+.dir-banner{background:var(--green);color:#fff;border-radius:12px;padding:.8rem 1rem;font-size:1.15rem;font-weight:600;margin:.6rem 0}
+.dir-h{font-size:1.05rem;margin:1rem 0 .4rem}
+.dir-steps{margin:0;padding-inline-start:1.4rem}
+.dir-steps li{padding:.35rem 0;border-bottom:1px solid var(--line)}
+.dir-steps li:last-child{border-bottom:0}
+.dir-steps li.current{background:var(--tint);font-weight:600}
+.dir-dist{color:var(--muted);margin-inline-start:.5rem;font-size:.9rem}

@@ -1,0 +1,55 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <p><a href="/map"><%= t('facility.back') %></a></p>
+    <h1 class="h-page"><%= f.name %></h1>
+    <p class="badges">
+      <span class="badge ok">✓ <%= t('map.verified') %></span>
+      <span class="badge"><%= t('type.' + f.facilityType) %></span>
+      <span class="badge"><%= t('opstatus.' + f.operationalStatus) %></span>
+      <% if (f.isDemo) { %><span class="badge demo"><%= t('map.demo') %></span><% } %>
+    </p>
+    <% if (f.isDemo) { %><p class="demo-banner"><%= t('map.demoBanner') %></p><% } %>
+
+    <div id="loc-map" class="pin-map" data-lat="<%= f.location.coordinates[1] %>" data-lng="<%= f.location.coordinates[0] %>" role="region" aria-label="<%= t('admin.location') %>"></div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="dir-btn" type="button"><%= t('dir.get') %></button>
+      <button class="btn btn-ghost" type="button" disabled><%= t('facility.report') %> <small><%= t('common.comingSoon') %></small></button>
+    </div>
+    <p class="hint"><%= t('dir.privacy') %></p>
+    <p id="dir-status" class="status" role="status" aria-live="polite"></p>
+
+    <section id="dir-panel" class="dir-panel" hidden aria-label="<%= t('dir.get') %>">
+      <p id="dir-summary" class="dir-summary"></p>
+      <div id="dir-banner" class="dir-banner" role="status" aria-live="polite" hidden></div>
+      <div class="actions">
+        <button class="btn btn-primary" id="dir-start" type="button"><%= t('dir.start') %></button>
+        <button class="btn btn-ghost danger" id="dir-stop" type="button" hidden><%= t('dir.stop') %></button>
+      </div>
+      <h2 class="dir-h"><%= t('dir.steps') %></h2>
+      <ol id="dir-steps" class="dir-steps"></ol>
+      <p class="hint"><%= t('dir.keepOpen') %> <%= t('dir.safety') %></p>
+      <p class="hint"><%= t('dir.credit') %></p>
+    </section>
+
+    <dl class="facts">
+      <dt><%= t('map.accepts') %></dt><dd><%= f.acceptedWaste.map((w) => t('waste.' + w)).join(', ') || '-' %></dd>
+      <dt><%= t('add.access') %></dt><dd><%= t('access.' + f.accessType) %></dd>
+      <dt><%= t('add.district') %></dt><dd><%= f.district || '-' %></dd>
+      <dt><%= t('add.localBody') %></dt><dd><%= f.localBody || '-' %></dd>
+      <dt><%= t('add.address') %></dt><dd><%= f.address || '-' %></dd>
+      <% if (f.description) { %><dt><%= t('add.description') %></dt><dd><%= f.description %></dd><% } %>
+      <dt><%= t('map.lastVerified') %></dt>
+      <dd><%= f.lastVerifiedAt ? new Date(f.lastVerifiedAt).toLocaleDateString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'medium' }) : t('map.neverVerified') %>
+        <% if (stale) { %> · <strong class="warn">⚠ <%= t('map.stale') %></strong><% } %></dd>
+    </dl>
+    <p class="hint"><%= t('facility.notice') %></p>
+  </div>
+</main>
+<script type="application/json" id="i18n"><%- clientStrings %></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/facility.js"></script>
+<%- include('../partials/footer') %>
