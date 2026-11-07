@@ -1,0 +1,56 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <p><a href="/admin/reports"><%= t('admin.back') %></a></p>
+    <% const f = r.facilityId; %>
+    <h1 class="h-page"><%= f ? f.name : t('admin.noName') %></h1>
+    <p class="badges">
+      <span class="badge status-pending"><%= t('report.type.' + r.type) %></span>
+      <% if (f) { %><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
+      <span class="badge"><%= t('opstatus.' + f.operationalStatus) %></span><% } %>
+    </p>
+    <%- include('../partials/messages') %>
+
+    <% if (f) { %>
+    <div id="loc-map" class="pin-map" data-lat="<%= f.location.coordinates[1] %>" data-lng="<%= f.location.coordinates[0] %>" role="region" aria-label="<%= t('admin.location') %>"></div>
+    <% } %>
+
+    <dl class="facts">
+      <dt><%= t('admin.report.problem') %></dt><dd><%= t('report.type.' + r.type) %></dd>
+      <dt><%= t('admin.report.note') %></dt><dd><%= r.note || '-' %></dd>
+      <dt><%= t('admin.submitted') %></dt><dd><%= t('admin.report.reporter', { name: r.reportedBy ? r.reportedBy.name : t('admin.noName') }) %> · <%= new Date(r.createdAt).toLocaleString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN') %></dd>
+      <% if (f) { %><dt><%= t('admin.report.facility') %></dt>
+      <dd><% if (f.verificationStatus === 'verified') { %><a href="/facility/<%= f._id %>"><%= f.name %></a><% } else { %><%= f.name %><% } %></dd><% } %>
+      <% if (r.status !== 'open') { %><dt><%= t('admin.reason') %></dt><dd><%= r.resolutionNote || '-' %></dd><% } %>
+    </dl>
+
+    <% if (r.status === 'open') { %>
+    <form method="post" action="/admin/reports/<%= r._id %>/decision" class="form decision">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <p class="hint"><strong><%= t('admin.report.willDo') %></strong> <%= t('admin.effect.' + r.type) %></p>
+      <div class="field"><label for="note"><%= t('admin.report.resolution') %></label>
+        <textarea id="note" name="note" rows="3" maxlength="500"></textarea></div>
+      <div class="actions">
+        <button class="btn btn-primary" type="submit" name="decision" value="confirm"><%= t('admin.report.confirm') %></button>
+        <button class="btn btn-ghost danger" type="submit" name="decision" value="dismiss"><%= t('admin.report.dismiss') %></button>
+      </div>
+    </form>
+    <% } else { %>
+    <p class="lead"><%= t('admin.report.closed') %></p>
+    <% } %>
+
+    <% if (f && ['reported-full', 'damaged', 'closed'].includes(f.operationalStatus)) { %>
+    <form method="post" action="/admin/facilities/<%= f._id %>/opstatus" class="form decision">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <input type="hidden" name="status" value="available">
+      <input type="hidden" name="back" value="/admin/reports/<%= r._id %>">
+      <button class="btn btn-ghost" type="submit"><%= t('admin.report.markAvailable') %></button>
+    </form>
+    <% } %>
+  </div>
+</main>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<% if (f) { %><script src="/js/admin-detail.js"></script><% } %>
+<%- include('../partials/footer') %>

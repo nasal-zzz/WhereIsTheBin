@@ -3,10 +3,13 @@
 <main id="main" class="section">
   <div class="wrap">
     <div class="title-row"><h1 class="h-page"><%= t('admin.title') %></h1>
-      <% if (['admin', 'super-admin'].includes(currentUser.role)) { %><a class="btn btn-ghost btn-small" href="/admin/audit"><%= t('admin.audit') %></a><% } %></div>
+      <div class="actions">
+        <a class="btn btn-ghost btn-small" href="/admin/reports"><%= t('admin.reports') %></a>
+        <% if (['admin', 'super-admin'].includes(currentUser.role)) { %><a class="btn btn-ghost btn-small" href="/admin/audit"><%= t('admin.audit') %></a><% } %>
+      </div></div>
     <%- include('../partials/messages') %>
     <div class="kpis">
-      <% ['pending', 'verified', 'rejected', 'users'].forEach((k) => { %>
+      <% ['pending', 'reports', 'verified', 'rejected', 'users'].forEach((k) => { %>
       <div class="kpi"><span class="kpi-n"><%= counts[k] %></span><span><%= t('admin.kpi.' + k) %></span></div>
       <% }) %>
     </div>

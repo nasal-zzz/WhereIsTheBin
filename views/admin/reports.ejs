@@ -1,0 +1,26 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap">
+    <p><a href="/admin"><%= t('admin.back') %></a></p>
+    <h1 class="h-page"><%= t('admin.reports') %></h1>
+    <%- include('../partials/messages') %>
+    <% if (!reports.length) { %><p class="lead"><%= t('admin.reports.empty') %></p><% } else { %>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th><%= t('admin.report.facility') %></th><th><%= t('admin.report.problem') %></th><th><%= t('admin.report.note') %></th><th><%= t('admin.submitted') %></th><th></th></tr></thead>
+      <tbody>
+      <% reports.forEach((r) => { %>
+        <tr>
+          <td><strong><%= r.facilityId ? r.facilityId.name : t('admin.noName') %></strong><br><small><%= t('admin.report.reporter', { name: r.reportedBy ? r.reportedBy.name : t('admin.noName') }) %></small></td>
+          <td><%= t('report.type.' + r.type) %></td>
+          <td><%= r.note || '-' %></td>
+          <td><%= new Date(r.createdAt).toLocaleDateString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'medium' }) %></td>
+          <td><a class="btn btn-primary btn-small" href="/admin/reports/<%= r._id %>"><%= t('admin.review') %></a></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table></div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>
