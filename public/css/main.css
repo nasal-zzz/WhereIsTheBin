@@ -145,9 +145,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
 /* Facility actions */
 .card .btn-small+.btn-small,.popup .btn-small+.btn-small{margin-inline-start:.4rem}
 
-
-
-
+ 
 /* Directions */
 [hidden]{display:none!important}
 .dir-panel{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:1rem 1.25rem;margin:1rem 0}
@@ -159,3 +157,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
 .dir-steps li:last-child{border-bottom:0}
 .dir-steps li.current{background:var(--tint);font-weight:600}
 .dir-dist{color:var(--muted);margin-inline-start:.5rem;font-size:.9rem}
+
+
+/* Report a problem */
+.report{border:1px solid var(--line);border-radius:var(--radius);background:#fff;padding:.8rem 1.25rem;margin:1rem 0}
+.report summary{cursor:pointer;font-weight:600}
+.report .form{margin-top:.8rem}

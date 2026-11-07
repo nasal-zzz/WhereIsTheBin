@@ -12,12 +12,13 @@
       <% if (f.isDemo) { %><span class="badge demo"><%= t('map.demo') %></span><% } %>
     </p>
     <% if (f.isDemo) { %><p class="demo-banner"><%= t('map.demoBanner') %></p><% } %>
+    <%- include('../partials/messages') %>
 
     <div id="loc-map" class="pin-map" data-lat="<%= f.location.coordinates[1] %>" data-lng="<%= f.location.coordinates[0] %>" role="region" aria-label="<%= t('admin.location') %>"></div>
 
     <div class="actions">
       <button class="btn btn-primary" id="dir-btn" type="button"><%= t('dir.get') %></button>
-      <button class="btn btn-ghost" type="button" disabled><%= t('facility.report') %> <small><%= t('common.comingSoon') %></small></button>
+      <a class="btn btn-ghost" href="#report"><%= t('facility.report') %></a>
     </div>
     <p class="hint"><%= t('dir.privacy') %></p>
     <p id="dir-status" class="status" role="status" aria-live="polite"></p>
@@ -46,10 +47,33 @@
       <dd><%= f.lastVerifiedAt ? new Date(f.lastVerifiedAt).toLocaleDateString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'medium' }) : t('map.neverVerified') %>
         <% if (stale) { %> · <strong class="warn">⚠ <%= t('map.stale') %></strong><% } %></dd>
     </dl>
+
+    <details id="report" class="report" <%= errors.length ? 'open' : '' %>>
+      <summary><%= t('report.title') %></summary>
+      <% if (currentUser) { %>
+      <form method="post" action="/facility/<%= f._id %>/report" class="form">
+        <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+        <p class="hint"><%= t('report.intro') %></p>
+        <fieldset class="field"><legend><%= t('report.type') %></legend>
+          <div class="checks">
+            <% reportTypes.forEach((r) => { %>
+            <label class="check"><input type="radio" name="type" value="<%= r %>" <%= values.type === r ? 'checked' : '' %> required> <%= t('report.type.' + r) %></label>
+            <% }) %>
+          </div>
+        </fieldset>
+        <div class="field"><label for="note"><%= t('report.note') %></label>
+          <textarea id="note" name="note" rows="3" maxlength="300"><%= values.note || '' %></textarea></div>
+        <button class="btn btn-primary" type="submit"><%= t('report.submit') %></button>
+      </form>
+      <% } else { %>
+      <p><a class="btn btn-primary btn-small" href="/facility/<%= f._id %>/report"><%= t('report.login') %></a></p>
+      <% } %>
+    </details>
     <p class="hint"><%= t('facility.notice') %></p>
   </div>
 </main>
 <script type="application/json" id="i18n"><%- clientStrings %></script>
 <script src="/vendor/leaflet/leaflet.js"></script>
 <script src="/js/facility.js"></script>
+<script src="/js/report-open.js"></script>
 <%- include('../partials/footer') %>

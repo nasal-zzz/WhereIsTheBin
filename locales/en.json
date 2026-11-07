@@ -213,5 +213,18 @@
   "dir.privacy": "To work out the route, your location and this place are sent to a free public routing service (OpenStreetMap Germany), which keeps its own server logs. We do not store your location.",
   "dir.safety": "Directions are only a guide. Watch the road and follow local signs.",
   "dir.keepOpen": "Keep this page open while you walk.",
-  "dir.credit": "Route data © OpenStreetMap contributors. Routing by OSRM on FOSSGIS servers."
+  "dir.credit": "Route data © OpenStreetMap contributors. Routing by OSRM on FOSSGIS servers.",
+  "report.title": "Report a problem",
+  "report.intro": "Tell us if something here is wrong. A moderator will review it.",
+  "report.type": "What is wrong?",
+  "report.type.full": "It is full",
+  "report.type.damaged": "It is damaged",
+  "report.type.missing": "It is missing or gone",
+  "report.type.wrong-location": "The location is wrong",
+  "report.note": "Details (optional)",
+  "report.submit": "Send report",
+  "report.login": "Log in to report a problem",
+  "err.reportType": "Choose what is wrong.",
+  "err.reportDuplicate": "You have already reported this and it is waiting for review.",
+  "flash.reported": "Thank you. Your report was sent to the moderators."
 }

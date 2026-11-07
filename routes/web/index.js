@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const { FACILITY_TYPES } = require('../../utils/constants');
 const { clientStrings } = require('../../utils/i18n');
+const { requireLogin } = require('../../middleware/auth');
 const facility = require('../../controllers/web/facilityController');
 
 const router = express.Router();
+const reportLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 10, standardHeaders: true, legacyHeaders: false });
 
 router.get('/', (req, res) => {
   res.render('public/home', { pageTitle: null, facilityTypes: FACILITY_TYPES });
@@ -19,6 +22,8 @@ router.get('/map', (req, res) => {
 });
 
 router.get('/facility/:id', facility.show);
+router.get('/facility/:id/report', requireLogin, facility.reportRedirect);
+router.post('/facility/:id/report', requireLogin, reportLimiter, facility.report);
 
 router.get('/health', (req, res) => {
   const states = ['disconnected', 'connected', 'connecting', 'disconnecting'];
