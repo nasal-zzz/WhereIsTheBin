@@ -31,17 +31,11 @@ Node.js 24, Express, EJS (server-rendered), MongoDB + Mongoose (local, port 2701
 - The developer prefers short explanations, and complete working files over fragments.
 
 ## Status
-Done: Sprint 1 foundation + bilingual homepage; Sprint 2 map (nearby API with 2dsphere, filters, place search, DEMO seed); Sprint 3 accounts (register/login/logout, sessions, CSRF), Add a bin form with map pin and duplicate warning (50 m), My contributions.
+Done: Sprint 1 foundation; Sprint 2 map (nearby API with 2dsphere, filters, place search, DEMO seed); Sprint 3 accounts (sessions, CSRF), Add a bin with map pin + 50 m duplicate warning, My contributions; Sprint 4 moderation (roles via `npm run set-role`, pending queue, approve/reject with reason, atomic decisions, AuditLog, /admin/audit); Sprint 5 facility detail page `/facility/:id`, in-site walking directions (server proxy `/api/v1/route` -> FOSSGIS OSRM `routed-foot`, live navigation in `public/js/facility.js`), "Report a problem" (Report model, one open report per user/facility/type), moderator report queue `/admin/reports` (confirm applies an effect: full/damaged -> operationalStatus, missing -> archived, wrong-location -> back to pending; moderators can reset a condition to available).
+Query strings are never logged (they can hold coordinates). Free public services in use (Nominatim, FOSSGIS routing, OSM tiles) are for development only and must be replaced before public launch.
 
-## Next task: Sprint 4 - moderation queue (not started)
-Build:
-- `models/AuditLog.js` (actorId, action, targetType, targetId, targetName, before, after, reason, createdAt).
-- Facility fields: `verifiedBy`, `reviewedAt`, `rejectionReason`.
-- `requireRole(roles)` middleware (403 page "No access" for others) and routes under `/admin`: dashboard with counts (pending/verified/rejected/users, excluding demo) + oldest-first pending queue; review page with map of the point, all details, reason box; POST decision approve/reject. Reject needs a reason (min 3 chars); approve sets verified + lastVerifiedAt. The status change must be atomic (`findOneAndUpdate` filtered on `verificationStatus: 'pending'`) so two moderators cannot double-review; write an AuditLog entry for each decision. `/admin/audit` (admin and super-admin only) lists the last 100 entries.
-- `scripts/set-role.js` + npm script `set-role`.
-- Header shows a "Moderation" link for moderator/admin/super-admin; My contributions shows the rejection reason.
-- Block moderators from reviewing their own submissions (admins may, for testing).
-- Full EN + ML strings, tests for the decision logic, and a manual test checklist.
-
-## Later (roadmap)
-Sprint 5: facility detail page + "Report a problem" (full / damaged / missing / wrong location) + report queue. Then: photo upload (Cloudinary, after developer sets up account), PWA basics (manifest, icons, offline shell), hosted geocoder + production tile provider, import tooling, deployment checklist.
+## Known gaps / next
+- Moderators cannot edit a facility or restore an archived one; "wrong location" reports cannot be fixed in the UI yet.
+- Moderators can review their own submissions (block this before real moderators join).
+- No privacy/about pages yet. No PWA. No photo upload (needs the developer's Cloudinary account; explain cost first).
+- Launch prep: HTTPS hosting, MongoDB Atlas + backups, production geocoder/routing/tiles, native-speaker review of all Malayalam text.
