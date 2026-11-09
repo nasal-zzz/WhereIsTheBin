@@ -1,0 +1,73 @@
+<%- include('../partials/head') %>
+<link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <p><a href="/admin/facilities/<%= f._id %>"><%= t('admin.back') %></a></p>
+    <h1 class="h-page"><%= t('admin.edit.title') %></h1>
+    <p class="badges"><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span></p>
+    <%- include('../partials/messages') %>
+
+    <form id="add-form" method="post" action="/admin/facilities/<%= f._id %>/edit" class="form" novalidate>
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <div class="field"><label for="name"><%= t('add.name') %></label>
+        <input id="name" name="name" type="text" maxlength="120" required value="<%= values.name || '' %>"></div>
+      <div class="grid2">
+        <div class="field"><label for="facilityType"><%= t('add.type') %></label>
+          <select id="facilityType" name="facilityType" required>
+            <% facilityTypes.forEach((x) => { %><option value="<%= x %>" <%= values.facilityType === x ? 'selected' : '' %>><%= t('type.' + x) %></option><% }) %>
+          </select></div>
+        <div class="field"><label for="accessType"><%= t('add.access') %></label>
+          <select id="accessType" name="accessType">
+            <% accessTypes.forEach((x) => { %><option value="<%= x %>" <%= values.accessType === x ? 'selected' : '' %>><%= t('access.' + x) %></option><% }) %>
+          </select></div>
+      </div>
+      <fieldset class="field"><legend><%= t('add.waste') %></legend>
+        <div class="checks"><% wasteCategories.forEach((w) => { %>
+          <label class="check"><input type="checkbox" name="waste" value="<%= w %>" <%= (values.waste || []).includes(w) ? 'checked' : '' %>> <%= t('waste.' + w) %></label>
+        <% }) %></div>
+      </fieldset>
+      <div class="grid2">
+        <div class="field"><label for="district"><%= t('add.district') %></label>
+          <input id="district" name="district" type="text" maxlength="80" value="<%= values.district || '' %>"></div>
+        <div class="field"><label for="localBody"><%= t('add.localBody') %></label>
+          <input id="localBody" name="localBody" type="text" maxlength="80" value="<%= values.localBody || '' %>"></div>
+      </div>
+      <div class="field"><label for="address"><%= t('add.address') %></label>
+        <input id="address" name="address" type="text" maxlength="300" value="<%= values.address || '' %>"></div>
+      <div class="field"><label for="description"><%= t('add.description') %></label>
+        <textarea id="description" name="description" rows="3" maxlength="500"><%= values.description || '' %></textarea></div>
+
+      <fieldset class="field"><legend><%= t('add.location') %></legend>
+        <p class="hint"><%= t('add.pinHelp') %></p>
+        <div id="pin-map" class="pin-map" role="application" aria-label="<%= t('add.location') %>"></div>
+        <div class="pin-row">
+          <button class="btn btn-ghost btn-small" id="gps" type="button"><%= t('add.useGps') %></button>
+          <span id="coords" class="hint" role="status" aria-live="polite"></span>
+        </div>
+        <input type="hidden" id="lat" name="lat" value="<%= Number.isFinite(values.lat) ? values.lat : '' %>">
+        <input type="hidden" id="lng" name="lng" value="<%= Number.isFinite(values.lng) ? values.lng : '' %>">
+      </fieldset>
+
+      <% if (f.verificationStatus === 'verified') { %>
+      <label class="check"><input type="checkbox" name="markVerified"> <%= t('admin.edit.markVerified') %></label>
+      <% } %>
+      <button class="btn btn-primary" type="submit"><%= t('admin.edit.save') %></button>
+    </form>
+
+    <% if (['verified', 'archived'].includes(f.verificationStatus)) { %>
+    <form method="post" action="/admin/facilities/<%= f._id %>/state" class="form decision">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <% if (f.verificationStatus === 'verified') { %>
+      <button class="btn btn-ghost danger" type="submit" name="state" value="archive"><%= t('admin.state.archive') %></button>
+      <% } else { %>
+      <button class="btn btn-primary" type="submit" name="state" value="restore"><%= t('admin.state.restore') %></button>
+      <% } %>
+    </form>
+    <% } %>
+  </div>
+</main>
+<script type="application/json" id="i18n"><%- clientStrings %></script>
+<script src="/vendor/leaflet/leaflet.js"></script>
+<script src="/js/add.js"></script>
+<%- include('../partials/footer') %>

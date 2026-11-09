@@ -22,7 +22,7 @@
       <dt><%= t('admin.report.note') %></dt><dd><%= r.note || '-' %></dd>
       <dt><%= t('admin.submitted') %></dt><dd><%= t('admin.report.reporter', { name: r.reportedBy ? r.reportedBy.name : t('admin.noName') }) %> · <%= new Date(r.createdAt).toLocaleString(currentLocale === 'ml' ? 'ml-IN' : 'en-IN') %></dd>
       <% if (f) { %><dt><%= t('admin.report.facility') %></dt>
-      <dd><% if (f.verificationStatus === 'verified') { %><a href="/facility/<%= f._id %>"><%= f.name %></a><% } else { %><%= f.name %><% } %></dd><% } %>
+      <dd><% if (f.verificationStatus === 'verified') { %><a href="/facility/<%= f._id %>"><%= f.name %></a><% } else { %><%= f.name %><% } %> · <a href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.edit') %></a></dd><% } %>
       <% if (r.status !== 'open') { %><dt><%= t('admin.reason') %></dt><dd><%= r.resolutionNote || '-' %></dd><% } %>
     </dl>
 

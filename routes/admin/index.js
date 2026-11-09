@@ -6,8 +6,12 @@ const router = express.Router();
 router.use(requireLogin, requireRole(['moderator', 'admin', 'super-admin']));
 
 router.get('/', admin.dashboard);
+router.get('/facilities', admin.facilities);
 router.get('/facilities/:id', admin.show);
+router.get('/facilities/:id/edit', admin.editForm);
+router.post('/facilities/:id/edit', admin.editSubmit);
 router.post('/facilities/:id/decision', admin.decide);
+router.post('/facilities/:id/state', admin.setState);
 router.post('/facilities/:id/opstatus', admin.setOpStatus);
 router.get('/reports', admin.reports);
 router.get('/reports/:id', admin.reportShow);

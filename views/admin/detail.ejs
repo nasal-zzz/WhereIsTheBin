@@ -4,7 +4,8 @@
 <main id="main" class="section">
   <div class="wrap narrow wide">
     <p><a href="/admin"><%= t('admin.back') %></a></p>
-    <h1 class="h-page"><%= f.name %></h1>
+    <div class="title-row"><h1 class="h-page"><%= f.name %></h1>
+      <a class="btn btn-ghost btn-small" href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.edit') %></a></div>
     <p class="badges"><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
       <span class="badge"><%= t('type.' + f.facilityType) %></span></p>
     <%- include('../partials/messages') %>

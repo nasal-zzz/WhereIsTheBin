@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const svc = require('../../services/moderationService');
 const { clientStrings } = require('../../utils/i18n');
+const { FACILITY_TYPES, WASTE_CATEGORIES, ACCESS_TYPES } = require('../../utils/constants');
+const { validateFacilityInput } = require('../../utils/facilityInput');
 
 const notFound = (next) => { const e = new Error('Not found'); e.status = 404; next(e); };
 const badRequest = (next) => { const e = new Error('Bad request'); e.status = 400; next(e); };
@@ -85,6 +87,65 @@ exports.setOpStatus = async (req, res, next) => {
     req.session.flash = 'flash.statusReset';
     const back = String(req.body.back || '');
     res.redirect(back.startsWith('/admin/') && !back.startsWith('//') ? back : '/admin');
+  } catch (err) { next(err); }
+};
+
+// ---------- facility management ----------
+exports.facilities = async (req, res, next) => {
+  try {
+    const status = String(req.query.status || '');
+    const q = String(req.query.q || '').trim().slice(0, 80);
+    res.render('admin/facilities', { pageTitle: 'admin.facilities', items: await svc.listFacilities({ status, q }), status, q });
+  } catch (err) { next(err); }
+};
+
+function renderEdit(req, res, f, { errors = [], values, status = 200 } = {}) {
+  const [lng, lat] = f.location.coordinates;
+  const current = {
+    name: f.name, facilityType: f.facilityType, waste: f.acceptedWaste, accessType: f.accessType,
+    district: f.district || '', localBody: f.localBody || '', address: f.address || '', description: f.description || '', lat, lng,
+  };
+  res.status(status).render('admin/edit', {
+    pageTitle: 'admin.edit.title', f, errors, values: values || current,
+    facilityTypes: FACILITY_TYPES, wasteCategories: WASTE_CATEGORIES, accessTypes: ACCESS_TYPES,
+    clientStrings: clientStrings(req.locale, ['add.', 'map.locat']),
+  });
+}
+
+exports.editForm = async (req, res, next) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) return notFound(next);
+    const f = await svc.getFacility(req.params.id);
+    if (!f) return notFound(next);
+    renderEdit(req, res, f);
+  } catch (err) { next(err); }
+};
+
+exports.editSubmit = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return notFound(next);
+    const f = await svc.getFacility(id);
+    if (!f) return notFound(next);
+    const { errors, values } = validateFacilityInput(req.body);
+    if (errors.length) return renderEdit(req, res, f, { errors, values, status: 400 });
+
+    const result = await svc.updateFacility({ facilityId: id, actor: req.user, values, markVerified: req.body.markVerified === 'on' });
+    if (!result) return notFound(next);
+    req.session.flash = result.changed.length || result.stamped ? 'flash.facilityUpdated' : 'admin.edit.noChanges';
+    res.redirect(`/admin/facilities/${id}`);
+  } catch (err) { next(err); }
+};
+
+exports.setState = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.isValidObjectId(id)) return notFound(next);
+    const state = req.body.state;
+    if (!['archive', 'restore'].includes(state)) return badRequest(next);
+    const done = await svc.setFacilityState({ facilityId: id, actor: req.user, state });
+    req.session.flash = !done ? 'flash.stateConflict' : state === 'archive' ? 'flash.facilityArchived' : 'flash.facilityRestored';
+    res.redirect(`/admin/facilities/${id}`);
   } catch (err) { next(err); }
 };
 

@@ -113,9 +113,79 @@ async function setOperationalStatus({ facilityId, actor, status }) {
   return before;
 }
 
+// ---------- facility management ----------
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const STATUSES = ['pending', 'verified', 'rejected', 'archived'];
+
+function listFacilities({ status, q }) {
+  const filter = { isDemo: { $ne: true } };
+  if (STATUSES.includes(status)) filter.verificationStatus = status;
+  if (q) filter.name = { $regex: escapeRegex(q), $options: 'i' };
+  return Facility.find(filter).sort({ updatedAt: -1 }).limit(100)
+    .select('name facilityType verificationStatus operationalStatus district updatedAt').lean();
+}
+
+const EDITABLE = ['name', 'facilityType', 'acceptedWaste', 'accessType', 'district', 'localBody', 'address', 'description'];
+const norm = (v) => (v === undefined || v === null ? '' : v);
+
+// Saves a moderator edit and records exactly which fields changed. Returns null if the facility does not exist.
+async function updateFacility({ facilityId, actor, values, markVerified }) {
+  const before = await Facility.findById(facilityId).lean();
+  if (!before) return null;
+
+  const next = {
+    name: values.name, facilityType: values.facilityType, acceptedWaste: values.waste, accessType: values.accessType,
+    district: values.district, localBody: values.localBody, address: values.address, description: values.description,
+  };
+  const from = {};
+  const to = {};
+  for (const k of EDITABLE) {
+    if (JSON.stringify(norm(before[k])) !== JSON.stringify(norm(next[k]))) { from[k] = norm(before[k]); to[k] = next[k]; }
+  }
+  const [oldLng, oldLat] = before.location.coordinates;
+  if (Math.abs(oldLng - values.lng) > 1e-6 || Math.abs(oldLat - values.lat) > 1e-6) {
+    from.location = [oldLat, oldLng];
+    to.location = [values.lat, values.lng];
+  }
+  const stamp = markVerified && before.verificationStatus === 'verified';
+  const changed = Object.keys(to);
+  if (!changed.length && !stamp) return { changed: [], stamped: false };
+
+  const set = { ...next, location: { type: 'Point', coordinates: [values.lng, values.lat] } };
+  if (stamp) { set.lastVerifiedAt = new Date(); set.verifiedBy = actor._id; to.lastVerifiedAt = set.lastVerifiedAt; }
+  await Facility.updateOne({ _id: facilityId }, { $set: set }, { runValidators: true });
+
+  await AuditLog.create({
+    actorId: actor._id, action: 'facility.edit', targetType: 'facility', targetId: before._id,
+    targetName: values.name, before: from, after: to,
+  });
+  return { changed, stamped: stamp };
+}
+
+// archive: verified -> archived (hidden). restore: archived -> verified. Race-safe; null if the state does not fit.
+async function setFacilityState({ facilityId, actor, state }) {
+  const now = new Date();
+  const rules = {
+    archive: { from: 'verified', set: { verificationStatus: 'archived' } },
+    restore: { from: 'archived', set: { verificationStatus: 'verified', lastVerifiedAt: now, verifiedBy: actor._id } },
+  };
+  const rule = rules[state];
+  if (!rule) return null;
+  const before = await Facility.findOneAndUpdate(
+    { _id: facilityId, verificationStatus: rule.from }, { $set: rule.set }, { returnDocument: 'before' }
+  ).lean();
+  if (!before) return null;
+  await AuditLog.create({
+    actorId: actor._id, action: `facility.${state}`, targetType: 'facility', targetId: before._id, targetName: before.name,
+    before: { verificationStatus: before.verificationStatus }, after: { verificationStatus: rule.set.verificationStatus },
+  });
+  return before;
+}
+
 const recentAudit = () => AuditLog.find().sort({ createdAt: -1 }).limit(100).populate('actorId', 'name').lean();
 
 module.exports = {
   effectFor, dashboardData, getFacility, decide,
   listOpenReports, getReport, decideReport, setOperationalStatus, recentAudit,
+  listFacilities, updateFacility, setFacilityState,
 };

@@ -1,0 +1,41 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap">
+    <p><a href="/admin"><%= t('admin.back') %></a></p>
+    <h1 class="h-page"><%= t('admin.facilities') %></h1>
+    <%- include('../partials/messages') %>
+    <nav class="tabs" aria-label="<%= t('admin.facilities') %>">
+      <a href="/admin/facilities<%= q ? '?q=' + encodeURIComponent(q) : '' %>" <%- !status ? 'aria-current="true"' : '' %>><%= t('admin.facilities.all') %></a>
+      <% ['pending', 'verified', 'rejected', 'archived'].forEach((s) => { %>
+      <a href="/admin/facilities?status=<%= s %><%= q ? '&q=' + encodeURIComponent(q) : '' %>" <%- status === s ? 'aria-current="true"' : '' %>><%= t('status.' + s) %></a>
+      <% }) %>
+    </nav>
+    <form method="get" action="/admin/facilities" class="search" role="search">
+      <% if (status) { %><input type="hidden" name="status" value="<%= status %>"><% } %>
+      <label for="q"><%= t('admin.facilities.search') %></label>
+      <div class="row">
+        <input id="q" name="q" type="search" maxlength="80" value="<%= q %>">
+        <button class="btn btn-primary" type="submit"><%= t('map.search.button') %></button>
+      </div>
+    </form>
+    <% if (!items.length) { %><p class="lead"><%= t('admin.facilities.empty') %></p><% } else { %>
+    <div class="table-wrap" style="margin-top:1rem"><table class="table">
+      <thead><tr><th><%= t('add.name') %></th><th><%= t('add.type') %></th><th><%= t('admin.kpi.pending') %></th><th><%= t('add.district') %></th><th></th></tr></thead>
+      <tbody>
+      <% items.forEach((f) => { %>
+        <tr>
+          <td><a href="/admin/facilities/<%= f._id %>"><strong><%= f.name %></strong></a></td>
+          <td><%= t('type.' + f.facilityType) %></td>
+          <td><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
+            <% if (f.verificationStatus === 'verified') { %><br><small><%= t('opstatus.' + f.operationalStatus) %></small><% } %></td>
+          <td><%= f.district || '-' %></td>
+          <td><a class="btn btn-ghost btn-small" href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.edit') %></a></td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table></div>
+    <% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>
