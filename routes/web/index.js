@@ -9,6 +9,16 @@ const facility = require('../../controllers/web/facilityController');
 const router = express.Router();
 const reportLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 10, standardHeaders: true, legacyHeaders: false });
 
+// Text pages live in views/pages/<name>.<en|ml>.ejs. Update CONTENT_UPDATED whenever their wording changes.
+const PAGES = { about: 'nav.about', privacy: 'nav.privacy' };
+const CONTENT_UPDATED = new Date('2026-11-09');
+const page = (name) => (req, res) =>
+  res.render('public/page', {
+    pageTitle: PAGES[name], titleKey: PAGES[name], name,
+    updated: CONTENT_UPDATED.toLocaleDateString(req.locale === 'ml' ? 'ml-IN' : 'en-IN', { dateStyle: 'long' }),
+    contactEmail: process.env.CONTACT_EMAIL || '',
+  });
+
 router.get('/', (req, res) => {
   res.render('public/home', { pageTitle: null, facilityTypes: FACILITY_TYPES });
 });
@@ -20,6 +30,9 @@ router.get('/map', (req, res) => {
     clientStrings: clientStrings(req.locale, ['map.', 'type.', 'waste.']),
   });
 });
+
+router.get('/about', page('about'));
+router.get('/privacy', page('privacy'));
 
 router.get('/facility/:id', facility.show);
 router.get('/facility/:id/report', requireLogin, facility.reportRedirect);

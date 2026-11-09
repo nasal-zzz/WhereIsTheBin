@@ -268,5 +268,11 @@
   "flash.stateConflict": "This facility is not in the right state for that action.",
   "audit.facility.edit": "Edited",
   "audit.facility.archive": "Archived",
-  "audit.facility.restore": "Restored"
+  "audit.facility.restore": "Restored",
+  "nav.about": "About",
+  "nav.privacy": "Privacy",
+  "footer.nav": "Information",
+  "page.updated": "Last updated: {date}",
+  "page.contact": "Contact",
+  "page.contactSoon": "Contact details will be added here before launch."
 }

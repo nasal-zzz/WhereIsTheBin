@@ -1,0 +1,13 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide prose">
+    <h1 class="h-page"><%= t(titleKey) %></h1>
+    <p class="hint"><%= t('page.updated', { date: updated }) %></p>
+    <%- include('../pages/' + name + '.' + currentLocale + '.ejs') %>
+    <h2><%= t('page.contact') %></h2>
+    <% if (contactEmail) { %><p><a href="mailto:<%= contactEmail %>"><%= contactEmail %></a></p>
+    <% } else { %><p><%= t('page.contactSoon') %></p><% } %>
+  </div>
+</main>
+<%- include('../partials/footer') %>

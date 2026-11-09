@@ -169,3 +169,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--green)}
 .tabs{display:flex;flex-wrap:wrap;gap:.4rem;margin:1rem 0}
 .tabs a{border:1px solid var(--line);border-radius:999px;padding:.25rem .9rem;text-decoration:none;color:var(--ink);background:#fff}
 .tabs a[aria-current=true]{background:var(--green);border-color:var(--green);color:#fff;font-weight:600}
+
+
+/* Text pages and footer links */
+.prose h2{margin-top:2rem;font-size:1.3rem}
+.prose p,.prose li{max-width:70ch}
+.prose ul{padding-inline-start:1.3rem}
+.prose li{margin:.35rem 0}
+.foot-links{display:flex;flex-wrap:wrap;gap:1.25rem;margin:.6rem 0}
+.foot-links a{color:#fff}

@@ -268,5 +268,11 @@
   "flash.stateConflict": "ഈ പ്രവർത്തനത്തിന് കേന്ദ്രം ശരിയായ അവസ്ഥയിലല്ല.",
   "audit.facility.edit": "തിരുത്തി",
   "audit.facility.archive": "ആർക്കൈവ് ചെയ്തു",
-  "audit.facility.restore": "തിരികെ എടുത്തു"
+  "audit.facility.restore": "തിരികെ എടുത്തു",
+  "nav.about": "ഞങ്ങളെക്കുറിച്ച്",
+  "nav.privacy": "സ്വകാര്യത",
+  "footer.nav": "വിവരങ്ങൾ",
+  "page.updated": "അവസാനം പുതുക്കിയത്: {date}",
+  "page.contact": "ബന്ധപ്പെടാൻ",
+  "page.contactSoon": "ബന്ധപ്പെടാനുള്ള വിവരങ്ങൾ ലോഞ്ചിന് മുൻപ് ഇവിടെ ചേർക്കും."
 }
