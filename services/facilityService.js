@@ -17,6 +17,7 @@ async function findNearby({ lat, lng, radiusM, type, limit }) {
     },
     { $limit: limit },
   ]);
+  // SDSSSSSSSD
 
   return rows.map((f) => ({
     id: String(f._id),
