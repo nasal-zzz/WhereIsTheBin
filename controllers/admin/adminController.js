@@ -44,6 +44,10 @@ exports.decide = async (req, res, next) => {
       return renderDetail(req, res, f, { errors: ['err.reason'], reasonText: reason, status: 400 });
     }
     const done = await svc.decide({ facilityId: id, actor: req.user, decision, reason });
+    if (done === 'self') {
+      req.session.flash = 'flash.selfReview';
+      return res.redirect('/admin');
+    }
     req.session.flash = !done ? 'flash.alreadyReviewed' : decision === 'approve' ? 'flash.approved' : 'flash.rejected';
     res.redirect('/admin');
   } catch (err) { next(err); }

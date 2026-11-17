@@ -29,7 +29,7 @@ const getFacility = (id) =>
   Facility.findById(id).populate('addedBy', 'name').populate('verifiedBy', 'name').lean();
 
 // Only a still-pending submission can be decided; the status check in the query makes this race-safe.
-// Returns null if someone else already reviewed it.
+// Returns null if someone else already reviewed it, or if the actor submitted it themselves.
 async function decide({ facilityId, actor, decision, reason }) {
   const now = new Date();
   const set = decision === 'approve'
@@ -37,12 +37,18 @@ async function decide({ facilityId, actor, decision, reason }) {
     : { verificationStatus: 'rejected', verifiedBy: actor._id, reviewedAt: now, rejectionReason: reason };
   const update = decision === 'approve' ? { $set: set, $unset: { rejectionReason: 1 } } : { $set: set };
 
+  // Block self-review: addedBy must not be the actor (atomic check inside the query).
   const before = await Facility.findOneAndUpdate(
-    { _id: facilityId, verificationStatus: 'pending' },
+    { _id: facilityId, verificationStatus: 'pending', addedBy: { $ne: actor._id } },
     update,
     { returnDocument: 'before' }
   );
-  if (!before) return null;
+  if (!before) {
+    // Distinguish self-review from already-reviewed for the controller.
+    const facility = await Facility.findById(facilityId).select('addedBy verificationStatus').lean();
+    if (facility && String(facility.addedBy) === String(actor._id)) return 'self';
+    return null;
+  }
 
   await AuditLog.create({
     actorId: actor._id,

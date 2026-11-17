@@ -41,6 +41,14 @@
     <p class="lead"><%= t('admin.report.closed') %></p>
     <% } %>
 
+    <% if (r.type === 'wrong-location' && f && r.status === 'open') { %>
+    <div class="notice notice-info" style="margin-top:1rem">
+      <strong><%= t('admin.report.wrongLocation.title') %></strong>
+      <p><%= t('admin.report.wrongLocation.hint') %></p>
+      <a class="btn btn-ghost btn-small" href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.report.wrongLocation.fix') %></a>
+    </div>
+    <% } %>
+
     <% if (f && ['reported-full', 'damaged', 'closed'].includes(f.operationalStatus)) { %>
     <form method="post" action="/admin/facilities/<%= f._id %>/opstatus" class="form decision">
       <input type="hidden" name="_csrf" value="<%= csrfToken() %>">

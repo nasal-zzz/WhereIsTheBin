@@ -30,7 +30,16 @@
           <td><span class="badge status-<%= f.verificationStatus %>"><%= t('status.' + f.verificationStatus) %></span>
             <% if (f.verificationStatus === 'verified') { %><br><small><%= t('opstatus.' + f.operationalStatus) %></small><% } %></td>
           <td><%= f.district || '-' %></td>
-          <td><a class="btn btn-ghost btn-small" href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.edit') %></a></td>
+          <td>
+            <a class="btn btn-ghost btn-small" href="/admin/facilities/<%= f._id %>/edit"><%= t('admin.edit') %></a>
+            <% if (f.verificationStatus === 'archived') { %>
+            <form method="post" action="/admin/facilities/<%= f._id %>/state" style="display:inline">
+              <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+              <input type="hidden" name="state" value="restore">
+              <button class="btn btn-ghost btn-small" type="submit"><%= t('admin.state.restore') %></button>
+            </form>
+            <% } %>
+          </td>
         </tr>
       <% }) %>
       </tbody>

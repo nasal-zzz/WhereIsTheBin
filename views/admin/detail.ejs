@@ -36,6 +36,27 @@
       </div>
     </form>
     <% } %>
+
+    <% if (f.verificationStatus === 'verified') { %>
+    <form method="post" action="/admin/facilities/<%= f._id %>/state" class="form decision" style="margin-top:1rem">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <input type="hidden" name="state" value="archive">
+      <button class="btn btn-ghost danger" type="submit"
+        onclick="return confirm('<%= t('admin.state.archive') %>')">
+        <%= t('admin.state.archive') %>
+      </button>
+    </form>
+    <% } %>
+
+    <% if (f.verificationStatus === 'archived') { %>
+    <form method="post" action="/admin/facilities/<%= f._id %>/state" class="form decision" style="margin-top:1rem">
+      <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+      <input type="hidden" name="state" value="restore">
+      <button class="btn btn-primary" type="submit">
+        <%= t('admin.state.restore') %>
+      </button>
+    </form>
+    <% } %>
   </div>
 </main>
 <script type="application/json" id="i18n"><%- clientStrings %></script>

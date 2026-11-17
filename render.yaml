@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: whereisthebin
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        sync: false          # Set in Render dashboard — never commit secrets
+      - key: SESSION_SECRET
+        generateValue: true  # Render auto-generates a secure random value
+      - key: NOMINATIM_USER_AGENT
+        value: WhereIsTheBin/0.1 (contact: nasalarshid08@gmail.com)
+      - key: CONTACT_EMAIL
+        value: nasalarshid08@gmail.com
+      - key: ENABLE_SW
+        value: "1"
