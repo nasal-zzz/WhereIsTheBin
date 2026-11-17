@@ -33,6 +33,8 @@ Node.js 24, Express, EJS (server-rendered), MongoDB + Mongoose (local, port 2701
 ## Status
 Done: Sprint 1 foundation; Sprint 2 map (nearby API with 2dsphere, filters, place search, DEMO seed); Sprint 3 accounts (sessions, CSRF), Add a bin with map pin + 50 m duplicate warning, My contributions; Sprint 4 moderation (roles via `npm run set-role`, pending queue, approve/reject with reason, atomic decisions, AuditLog, /admin/audit); Sprint 5 facility detail page `/facility/:id`, in-site walking directions (server proxy `/api/v1/route` -> FOSSGIS OSRM `routed-foot`, live navigation in `public/js/facility.js`), "Report a problem" (Report model, one open report per user/facility/type), moderator report queue `/admin/reports` (confirm applies an effect: full/damaged -> operationalStatus, missing -> archived, wrong-location -> back to pending; moderators can reset a condition to available).
 Query strings are never logged (they can hold coordinates). Free public services in use (Nominatim, FOSSGIS routing, OSM tiles) are for development only and must be replaced before public launch.
+PWA: `public/manifest.webmanifest`, icons made by `npm run make-icons` (needs the sharp devDependency), `public/sw.js` (caches only static files; never pages or `/api/`), `public/offline.html` (static, bilingual by design). The service worker is off in development unless `ENABLE_SW=1`.
+Launch list: HTTPS hosting, MongoDB Atlas + backups, production geocoder/routing/tile providers, "forgot password" by email (needs an email service; for now use `npm run reset-password`), native-speaker review of Malayalam, privacy/legal review.
 
 ## Known gaps / next
 - Moderators cannot edit a facility or restore an archived one; "wrong location" reports cannot be fixed in the UI yet.

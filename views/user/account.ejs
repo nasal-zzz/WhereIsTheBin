@@ -1,0 +1,37 @@
+<%- include('../partials/head') %>
+<%- include('../partials/header') %>
+<main id="main" class="section">
+  <div class="wrap narrow wide">
+    <h1 class="h-page"><%= t('account.title') %></h1>
+    <%- include('../partials/messages') %>
+
+    <h2><%= t('account.details') %></h2>
+    <dl class="facts">
+      <dt><%= t('auth.name') %></dt><dd><%= account.name %></dd>
+      <dt><%= t('auth.email') %></dt><dd><%= account.email %></dd>
+    </dl>
+
+    <section class="danger-zone" aria-labelledby="del-title">
+      <h2 id="del-title"><%= t('account.delete.title') %></h2>
+      <% if (account.role !== 'user') { %>
+      <p><%= t('account.delete.staff') %></p>
+      <% } else { %>
+      <p><%= t('account.delete.intro') %></p>
+      <ul>
+        <li><%= t('account.delete.removed') %></li>
+        <li><%= t('account.delete.withdrawn') %></li>
+        <li><%= t('account.delete.kept') %></li>
+        <li><%= t('account.delete.loggedOut') %></li>
+      </ul>
+      <form method="post" action="/account/delete" class="form" novalidate>
+        <input type="hidden" name="_csrf" value="<%= csrfToken() %>">
+        <div class="field"><label for="password"><%= t('account.delete.password') %></label>
+          <input id="password" name="password" type="password" maxlength="128" autocomplete="current-password" required></div>
+        <label class="check"><input type="checkbox" name="confirm"> <%= t('account.delete.confirm') %></label>
+        <button class="btn btn-ghost danger" type="submit"><%= t('account.delete.button') %></button>
+      </form>
+      <% } %>
+    </section>
+  </div>
+</main>
+<%- include('../partials/footer') %>

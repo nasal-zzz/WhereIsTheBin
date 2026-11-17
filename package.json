@@ -8,7 +8,8 @@
     "dev": "node --watch server.js",
     "test": "node --test",
     "seed:demo": "node scripts/seed-demo.js",
-    "set-role": "node scripts/set-role.js"
+    "set-role": "node scripts/set-role.js",
+    "make-icons": "node scripts/make-icons.js"
   },
   "engines": {
     "node": ">=18"
@@ -28,5 +29,8 @@
     "leaflet": "^1.9.4",
     "mongoose": "^9.11.4",
     "morgan": "^1.12.1"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

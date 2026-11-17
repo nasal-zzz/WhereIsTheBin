@@ -1,3 +1,5 @@
+<%# The service worker runs in production, or locally when ENABLE_SW=1 is set in .env (it caches files, which can hide edits). %>
+<% const swOn = process.env.NODE_ENV === 'production' || process.env.ENABLE_SW === '1'; %>
 <footer class="site-footer">
   <div class="wrap">
     <p class="tagline"><%= t('brand.tagline') %></p>
@@ -5,9 +7,11 @@
       <a href="/about"><%= t('nav.about') %></a>
       <a href="/privacy"><%= t('nav.privacy') %></a>
     </nav>
+    <button id="install-btn" class="btn btn-small install-btn" type="button" hidden><%= t('pwa.install') %></button>
     <p><%= t('footer.note') %></p>
     <p class="muted"><%= t('footer.map') %></p>
   </div>
 </footer>
+<script src="/js/pwa.js" data-sw="<%= swOn ? '1' : '0' %>" defer></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const auth = require('../../controllers/web/authController');
+const account = require('../../controllers/web/accountController');
 const contribute = require('../../controllers/web/contributeController');
 const { requireLogin } = require('../../middleware/auth');
 
@@ -18,5 +19,8 @@ router.post('/logout', auth.logout);
 router.get('/add', requireLogin, contribute.showAdd);
 router.post('/add', requireLogin, submitLimiter, contribute.submitAdd);
 router.get('/my', requireLogin, contribute.myContributions);
+
+router.get('/account', requireLogin, account.show);
+router.post('/account/delete', requireLogin, authLimiter, account.remove);
 
 module.exports = router;
